@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { recordEvent } from "@/lib/analytics";
 
 const docOptions = [
   "Proforma 3",
@@ -26,7 +28,8 @@ const AdminDashboard = () => {
   const onCreateCompany = (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName.trim()) return;
-    const { username, password } = createCompany(companyName.trim());
+    const { username, password, companyId } = createCompany(companyName.trim());
+    recordEvent({ type: "company_created", actorRole: "admin", companyId });
     toast.success(`Company created. Credentials: ${username} / ${password}`);
     setCompanyName("");
   };
@@ -43,6 +46,11 @@ const AdminDashboard = () => {
     }
     approveApplicant(applicantId);
     setDocumentKit(applicantId, picked);
+    const app = state.applicants[applicantId];
+    if (app) {
+      recordEvent({ type: "applicant_approved", actorRole: "admin", applicantId, companyId: app.companyId, meta: { docs: picked.length } });
+      recordEvent({ type: "kit_created", actorRole: "admin", applicantId, companyId: app.companyId, meta: { docs: picked } });
+    }
     toast.success("Applicant approved and document kit created");
     setSelection({});
   };

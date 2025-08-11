@@ -1,14 +1,14 @@
 import { Helmet } from "react-helmet-async";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useAppState } from "@/store/app-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
 import { toast } from "sonner";
+import { recordEvent } from "@/lib/analytics";
 
 const CompanyDashboard = () => {
   const { id } = useParams();
@@ -27,7 +27,8 @@ const CompanyDashboard = () => {
   const onCreateApplicant = (e: React.FormEvent) => {
     e.preventDefault();
     if (!applicantName.trim()) return;
-    const { username, password } = createApplicant(company.id, applicantName.trim());
+    const { username, password, applicantId } = createApplicant(company.id, applicantName.trim());
+    recordEvent({ type: "applicant_created", actorRole: "company", companyId: company.id, applicantId });
     toast.success(`Applicant created. Credentials: ${username} / ${password}`);
     setApplicantName("");
   };
@@ -50,14 +51,12 @@ const CompanyDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Proforma 2</CardTitle>
-              <CardDescription>Placeholder form - you can edit and save.</CardDescription>
+              <CardDescription>Open the dedicated Proforma 2 page to edit and save.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="pf2">Content</Label>
-                <Textarea id="pf2" rows={10} value={proforma} onChange={(e) => setProforma(e.target.value)} placeholder="Enter Proforma 2 details here..." />
-              </div>
-              <Button onClick={onSaveProforma}>Save Proforma 2</Button>
+              <Button asChild>
+                <Link to={`/company/${company.id}/proforma-2`}>Open Proforma 2</Link>
+              </Button>
             </CardContent>
           </Card>
 

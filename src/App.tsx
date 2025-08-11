@@ -13,6 +13,16 @@ import CompanyDashboard from "./pages/CompanyDashboard";
 import ApplicantDashboard from "./pages/ApplicantDashboard";
 import ApplicantDocuments from "./pages/ApplicantDocuments";
 
+import Proforma1Applicant from "./pages/proformas/Proforma1Applicant";
+import Proforma2Company from "./pages/proformas/Proforma2Company";
+import Proforma3Admin from "./pages/proformas/Proforma3Admin";
+import Proforma4Admin from "./pages/proformas/Proforma4Admin";
+import Proforma5Admin from "./pages/proformas/Proforma5Admin";
+import Proforma6Admin from "./pages/proformas/Proforma6Admin";
+import InvitationLetterAdmin from "./pages/proformas/InvitationLetterAdmin";
+import UndertakingAdmin from "./pages/proformas/UndertakingAdmin";
+import Analytics from "./pages/Analytics";
+
 const queryClient = new QueryClient();
 
 const App = () => (

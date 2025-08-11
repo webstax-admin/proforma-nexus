@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
+import { recordEvent } from "@/lib/analytics";
 const Index = () => {
   const { login } = useAppState();
   const nav = useNavigate();
@@ -21,9 +21,18 @@ const Index = () => {
       toast.error("Invalid credentials");
       return;
     }
-    if (res.role === "admin") nav("/admin");
-    if (res.role === "company" && res.linkedId) nav(`/company/${res.linkedId}`);
-    if (res.role === "applicant" && res.linkedId) nav(`/applicant/${res.linkedId}`);
+    if (res.role === "admin") {
+      recordEvent({ type: "login_success", actorRole: "admin" });
+      nav("/admin");
+    }
+    if (res.role === "company" && res.linkedId) {
+      recordEvent({ type: "login_success", actorRole: "company", companyId: res.linkedId });
+      nav(`/company/${res.linkedId}`);
+    }
+    if (res.role === "applicant" && res.linkedId) {
+      recordEvent({ type: "login_success", actorRole: "applicant", applicantId: res.linkedId });
+      nav(`/applicant/${res.linkedId}`);
+    }
   };
 
   return (
